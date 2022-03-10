@@ -1,17 +1,31 @@
 package de.uslu.heroku;
 
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
-@RequestMapping("/api/greeting")
+@RequestMapping("/api")
+@RequiredArgsConstructor
 public class Controller {
 
-    @GetMapping ("/{name}")
-    public String greet(@PathVariable String name) {
-        return "Was ist hier los " + name;
+    private final QuestionService questionService;
+
+    @PostMapping
+    public Question createQuestion(@RequestBody Question question){
+        return questionService.createNewQuestion(question);
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<Question> findQuestionById(@PathVariable String id) {
+        return ResponseEntity.of(questionService.findById(id));
+    }
+
+    @GetMapping
+    public List<Question> findByRating(@RequestParam String rating) {
+        return questionService.findByRating(rating);
     }
 
 }
